@@ -5,18 +5,20 @@ public class StatsLibrary
     public double computeMean(ArrayList<Integer> listOfNumbers)
     {
         int sum = 0;
+        
         for (int singleNumber : listOfNumbers) {
             sum += singleNumber;
         }
+        
         return sum / (double) listOfNumbers.size();
     }
 
     public double computeMedian(ArrayList<Integer> listOfNumbers)
     {
-        // Note: Sorting is still necessary for median
         int[] sortedArray = listOfNumbers.stream().mapToInt(i -> i).toArray();
         java.util.Arrays.sort(sortedArray);
         int size = sortedArray.length;
+      
         if (size % 2 == 0) {
             return (sortedArray[size / 2 - 1] + sortedArray[size / 2]) / 2.0;
         } else {
@@ -26,7 +28,6 @@ public class StatsLibrary
 
     public ArrayList<Integer> computeMode(ArrayList<Integer> listOfNumbers)
     {
-        // Find the range of the numbers
         int maxNum = Integer.MIN_VALUE;
         int minNum = Integer.MAX_VALUE;
 
@@ -35,7 +36,6 @@ public class StatsLibrary
             if (number < minNum) minNum = number;
         }
 
-        // Create a frequency array
         int[] frequency = new int[maxNum - minNum + 1];
 
         for (int number : listOfNumbers) {
@@ -62,9 +62,11 @@ public class StatsLibrary
     {
         double mean = computeMean(listOfNumbers);
         double sum = 0;
+        
         for (int number : listOfNumbers) {
             sum += Math.pow(number - mean, 2);
         }
+        
         return Math.sqrt(sum / listOfNumbers.size());
     }
 }
