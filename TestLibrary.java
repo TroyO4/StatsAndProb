@@ -19,6 +19,7 @@ public class TestLibrary
         listOfNumbers.add(4);
         listOfNumbers.add(4);
         
+        System.out.println();
         System.out.println("Mean: " + tester.computeMean(listOfNumbers));
         System.out.println("Median: " + tester.computeMedian(listOfNumbers));
         
@@ -31,5 +32,6 @@ public class TestLibrary
         }
         
         System.out.println("Standard Deviation: " + tester.computeStandardDeviation(listOfNumbers));
+        System.out.println();
     }
 }
