@@ -1,5 +1,3 @@
-package pokmonClone;
-
 public class Pokemon extends Card {
     private int hp;
 

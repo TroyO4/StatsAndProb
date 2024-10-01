@@ -1,5 +1,3 @@
-package pokmonClone;
-
 public class Card {
     private String name;
     
