@@ -1,3 +1,4 @@
+package statslibrary;
 import java.util.ArrayList;
 
 public class StatsLibrary
