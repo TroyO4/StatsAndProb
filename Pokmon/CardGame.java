@@ -64,6 +64,7 @@ public class CardGame {
         CardGame game = new CardGame();
         int simulations = 10000;
         double successRate = game.simulate(simulations);
-        System.out.println("Success rate of drawing at least one Pokémon: " + successRate + "%");
+    
+        System.out.println("\nSuccess rate of drawing at least one Pokémon: " + successRate + "%\n");
     }
 }
