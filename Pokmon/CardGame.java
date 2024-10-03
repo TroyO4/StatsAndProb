@@ -1,4 +1,5 @@
 package pokmon;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,8 +9,8 @@ public class CardGame {
     private Random rng;
 
     public CardGame() {
-        deck = new ArrayList<>();
-        hand = new ArrayList<>();
+        deck = new ArrayList<Card>();
+        hand = new ArrayList<Card>();
         rng = new Random();
     }
 
@@ -26,22 +27,23 @@ public class CardGame {
         }
     }
 
+    
     public void drawHand() {
-        hand.clear();
+        hand.clear(); 
         for (int i = 0; i < 7; i++) {
-            int cardToTakeIndex = rng.nextInt(deck.size());
-            hand.add(deck.get(cardToTakeIndex));
-            deck.remove(cardToTakeIndex);
+            int cardIndex = rng.nextInt(deck.size());
+            hand.add(deck.get(cardIndex));
+            deck.remove(cardIndex);
         }
     }
 
     public boolean hasPokemon() {
-        for (Card singleCard : hand) {
-            if (singleCard instanceof Pokemon) {
+        for (Card card : hand) {
+            if (card instanceof Pokemon) { 
                 return true;
             }
         }
-        return false;
+        return false; 
     }
 
     public boolean simulateOneGame() {
@@ -51,20 +53,22 @@ public class CardGame {
     }
 
     public double simulate(int runs) {
-        int successCount = 0;
+        int countSuccess = 0;
+
         for (int i = 0; i < runs; i++) {
             if (simulateOneGame()) {
-                successCount++;
+                countSuccess++;
             }
         }
-        return (double) successCount / runs * 100;
+
+        return (double) countSuccess / runs * 100;
     }
 
     public static void main(String[] args) {
         CardGame game = new CardGame();
         int simulations = 10000;
         double successRate = game.simulate(simulations);
-    
-        System.out.println("\nSuccess rate of drawing at least one Pokémon: " + successRate + "%\n");
+        
+        System.out.println("Success rate of drawing at least one Pokémon: " + successRate + "%");
     }
 }
