@@ -1,3 +1,4 @@
+package pokmon;
 public class Card {
     private String name;
     

@@ -1,3 +1,4 @@
+package pokmon;
 import java.util.ArrayList;
 import java.util.Random;
 
