@@ -63,7 +63,7 @@ public class CardGame {
     public void runSimulations(int runs) {
         for (int pokemonCount = 1; pokemonCount <= 60; pokemonCount++) {
             double successRate = simulate(runs, pokemonCount);
-            System.out.println("With " + pokemonCount + " Pokémon in the deck, the success rate is: " + successRate + " %");
+            System.out.printf("With %d Pokémon in the deck, the success rate is: %.2f%%\n", pokemonCount, successRate);
         }
     }
 
