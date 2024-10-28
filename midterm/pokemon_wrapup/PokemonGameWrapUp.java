@@ -208,7 +208,6 @@ public class PokemonGameWrapUp {
      * Lets the player use a Trainer card from their hand
      */
     public void useTrainerCard() {
-        // Display the Trainer cards to the user
         System.out.println("Choose a Trainer card to use:");
         ArrayList<Trainer> trainerCards = new ArrayList<>();
         for (int i = 0; i < hand.size(); i++) {
@@ -224,7 +223,6 @@ public class PokemonGameWrapUp {
             return;
         }
     
-        // Get player's choice of Trainer card
         int choice = scanner.nextInt() - 1;
         if (choice >= 0 && choice < trainerCards.size()) {
             Trainer selectedTrainer = trainerCards.get(choice);
@@ -233,20 +231,20 @@ public class PokemonGameWrapUp {
             // Handle the specific trainer effect
             switch (selectedTrainer.getName()) {
                 case "Draw 2 Cards":
-                    drawTwoCards();  // Draw two cards
-                    return;  // End the turn immediately after drawing two cards
+                    drawTwoCards(); 
+                    return;
     
                 case "Heal 20 HP":
                     healActivePokemon(20);  // Heal active pokemon by 20 HP
-                    return;  // End the turn after healing
+                    return;
     
                 case "Switch Pokemon":
-                    switchActivePokemon();  // Switch pokemon
-                    return;  // End the turn after switching pokemon
+                    switchActivePokemon();
+                    return;
     
                 default:
                     System.out.println("\nTrainer card not recognized.\n");
-                    return;  // Safely end the turn in case of an unknown Trainer card
+                    return;
             }
         } else {
             System.out.println("Invalid choice. Please select a valid Trainer card.");
@@ -508,14 +506,11 @@ public class PokemonGameWrapUp {
      * Performs the opponents turn by drawing a card, attaching energy, and attacking
      */
     public void performOpponentTurn() {
-        // Draw a card if it's not the first turn
         if (!isFirstTurn) {
             opponentDrawCard();
         }
 
-        // After drawing a card, set isFirstTurn to false
         isFirstTurn = false;
-
         System.out.println("\n--- Opponent's Turn ---");
         System.out.println("Opponent drew a card.");
 
@@ -530,16 +525,14 @@ public class PokemonGameWrapUp {
         if (opponentActivePokemon.hasSufficientEnergy()) {
             System.out.println("Opponent's " + opponentActivePokemon.getName() + " attacks!");
 
-            // Attack player's active pokemon
             if (activePokemon != null) {
                 activePokemon.takeDamage(opponentActivePokemon.getAttackDamage());
                 System.out.println("Your pokemon now has " + activePokemon.getHp() + " HP remaining.");
                 if (activePokemon.getHp() <= 0) {
                     System.out.println("Your pokemon is knocked out!");
-                    replaceActivePokemon(); // Replace active pokemon if knocked out
-                    claimOpponentPrize(); // Opponent claims a prize
+                    replaceActivePokemon();
+                    claimOpponentPrize();
 
-                    // Check if the opponent has won after knocking out your pokemon
                     if (checkGameState()) return;
                 }
             }
@@ -572,21 +565,18 @@ public class PokemonGameWrapUp {
             opponentActivePokemon.clearEnergy(); // Reset energy when pokemon is knocked out
         }
     
-        // Add the knocked-out pokemon back to the opponent's hand
         opponentHand.add(opponentActivePokemon);
-    
-        // Clear the opponent's active pokemon
         opponentActivePokemon = null;
     
         // Find a new active pokemon from the opponent's hand
         for (Card card : opponentHand) {
             if (card instanceof Pokemon) {
-                opponentActivePokemon = (Pokemon) card; // Set the first pokemon in hand as the new active pokemon
+                opponentActivePokemon = (Pokemon) card;
                 System.out.println("\nOpponent's pokemon knocked out!");
                 System.out.println("Opponent's new active pokemon is: " + opponentActivePokemon.getName());
-                opponentHand.remove(card); // Remove it from the hand
-                opponentActiveHp = opponentActivePokemon.getHp(); // Reset the HP for the new active pokemon
-                opponentActivePokemon.setActive(true); // Set it as active
+                opponentHand.remove(card);
+                opponentActiveHp = opponentActivePokemon.getHp();
+                opponentActivePokemon.setActive(true);
                 return;
             }
         }
