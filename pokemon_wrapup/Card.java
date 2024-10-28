@@ -1,14 +1,14 @@
-package pokemon;
+package pokemon_wrapup;
 /**
  * The Card class stores all of the principles for a card
  */
-public class Card {
+public abstract class Card {
     /**
      * The name of the card
      */
-    private String name;
-    
-    /**
+    protected String name;
+
+     /**
      * Creates a new card with the specific name.
      * 
      * @param name the name of the card

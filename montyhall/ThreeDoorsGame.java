@@ -1,13 +1,25 @@
 /*
  * Troy O'Connor
  * Probability and Applied Stats
- * Answers to A and B at bottom of code
+ * Answers to A and B at the bottom of the code
  */
 package montyhall;
 import java.util.Random;
 
-public class MontyHall {
+/**
+ * ThreeDoorsGame simulates a game show where the contestant is asked to choose
+ * one out of three closed doors. Behind one door is a prize, while the other two
+ * doors are hiding a dud. In the game ths host reveals a dud behind one of the doors
+ * and asks the contestant if they want to keep their initial choice or switch doors.
+ * The program calculates the odds on if the contestant keeps their initial choice or switch.
+ */
+public class ThreeDoorsGame {
     
+    /**
+     * Main method shows the results and percentage of switching and staying
+     * 
+     * @param args
+     */
     public static void main(String[] args) {
         System.out.println("\nWins by staying: " + playGameNoSwitch(10000) + " out of 10,000");
         System.out.println("Wins by switching: " + playGameWithSwitch(10000) + " out of 10,000");
@@ -15,44 +27,59 @@ public class MontyHall {
         System.out.println("Win percentage by switching: " + (playGameWithSwitch(10000) * 100 / 10000) + "%\n");
     }
 
+    /**
+     * Calculates the results for if the contestant doesnt switch choices
+     * 
+     * @param trials the number of times the game is played
+     * @return the number of wins the contestant gets from staying with initial choice
+     */
     public static int playGameNoSwitch(int trials) {
         int wins = 0;
         Random rand = new Random();
+
         for (int i = 0; i < trials; i++) {
-            int goodPrize = rand.nextInt(3); // Random door for good prize
-            int contestantChoice = rand.nextInt(3); // Contestant picks random door
+            //randomly place prize behind a door
+            int goodPrize = rand.nextInt(3);
+            int contestantChoice = rand.nextInt(3);
             if (contestantChoice == goodPrize) {
-                wins++; // Contestant wins if they pick the door with the prize
+                wins++;
             }
         }
-        return wins; // Return total number of wins by staying
+        return wins;
     }
 
+    /**
+     * Calculates the results for if the contestant does switch doors from their first choice
+     * 
+     * @param trials the numberof times the game is played
+     * @return the number of wins the contestant gets from switching doors
+     */
     public static int playGameWithSwitch(int trials) {
         int wins = 0;
         Random rand = new Random();
-        for (int i = 0; i < trials; i++) {
-            int goodPrize = rand.nextInt(3); // Random door for good prize
-            int contestantChoice = rand.nextInt(3); // Contestant picks random door
 
-            // Host opens a dud door
+        for (int i = 0; i < trials; i++) {
+            int goodPrize = rand.nextInt(3);
+            int contestantChoice = rand.nextInt(3);
             int hostReveal = rand.nextInt(3);
+
+            //Makes sure the door that is revealed by the host is not the prize or contestants door
             while (hostReveal == contestantChoice || hostReveal == goodPrize) {
-                hostReveal = rand.nextInt(3); // Host keeps revealing until dud is shown
+                hostReveal = rand.nextInt(3);
             }
 
-            // Contestant switches to remaining unopened door
-            int switchChoice = 3 - contestantChoice - hostReveal; // Simple switch logic
+            //Find the right door to switch to
+            int switchChoice = 3 - contestantChoice - hostReveal;
             if (switchChoice == goodPrize) {
-                wins++; // Contestant wins by switching
+                wins++;
             }
         }
-        return wins; // Return total number of wins by switching
+        return wins;
     }
 }
 
 /*
- * Answers to 2.20 A and B
+ * Answers 2.20 A and B
  * 
  * A) If the contestant has no idea which curtains hide the various prizes and selects a 
  * curtain at random, assign reasonable probabilities to the simple events and calculate the 
@@ -61,7 +88,6 @@ public class MontyHall {
  * Answer:     A) P(G)= 1/3, P(D1)= 1/3, P(D2)= 1/3
  *                The probability that the contestant selects the curtain hiding the good prize
  *                at random is 1/3.
- * 
  * 
  * B) Before showing the contestant what was behind the curtain initially chosen, the game show 
  * host  would open one of the curtains and show the contestant one of the duds (he could always
