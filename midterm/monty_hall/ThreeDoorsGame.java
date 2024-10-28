@@ -3,7 +3,7 @@
  * Probability and Applied Stats
  * Answers to A and B at the bottom of the code
  */
-package montyhall;
+package monty_hall;
 import java.util.Random;
 
 /**

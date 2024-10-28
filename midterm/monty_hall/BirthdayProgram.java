@@ -1,4 +1,4 @@
-package montyhall;
+package monty_hall;
 import java.util.Scanner;
 
 /**
