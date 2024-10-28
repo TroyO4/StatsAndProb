@@ -1,4 +1,4 @@
-package birthday_program;
+package montyhall;
 import java.util.Random;
 
 /**
