@@ -16,7 +16,7 @@ public class PokemonGameWrapUp {
     private Pokemon opponentActivePokemon;
     private int playerPrizesTaken;
     private int opponentPrizesTaken;
-    final private boolean opponentHasBenchPokemon = true;
+    final private boolean opponentHasBenchPokemon;
     private int opponentActiveHp;
     final private ArrayList<Card> opponentHand;
     final private Scanner scanner;
@@ -31,6 +31,7 @@ public class PokemonGameWrapUp {
         hand = new ArrayList<>();
         prizes = new ArrayList<>();
         opponentHand = new ArrayList<>();
+        opponentHasBenchPokemon = true;
         scanner = new Scanner(System.in);
         this.isPlayerTurn = true;
     }
