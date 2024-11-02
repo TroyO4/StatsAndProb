@@ -3,7 +3,7 @@
  * Probability and Applied Stats
  * Answers to A and B at the bottom of the code
  */
-package monty_hall;
+package monty_hall.three_doors_game;
 import java.util.Random;
 
 /**
