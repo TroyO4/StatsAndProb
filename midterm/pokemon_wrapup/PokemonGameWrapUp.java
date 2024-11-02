@@ -1,7 +1,10 @@
 package pokemon_wrapup;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -21,7 +24,8 @@ public class PokemonGameWrapUp {
     final private ArrayList<Card> opponentHand;
     final private Scanner scanner;
     private boolean energyAttachedThisTurn;
-    final private boolean isPlayerTurn; 
+    final private boolean isPlayerTurn;
+    private final Map<String, Runnable> trainerCardActions;
 
     /**
      * Creates a new PokemonGameWrapUp game
@@ -34,6 +38,11 @@ public class PokemonGameWrapUp {
         opponentHasBenchPokemon = true;
         scanner = new Scanner(System.in);
         this.isPlayerTurn = true;
+
+        trainerCardActions = new HashMap<>();
+        trainerCardActions.put("Draw 2 Cards", this::drawTwoCards);
+        trainerCardActions.put("Heal 20 HP", () -> healPokemon(activePokemon, 20));
+        trainerCardActions.put("Switch Pokemon", this::switchActivePokemon);
     }
 
     /**
@@ -70,77 +79,83 @@ public class PokemonGameWrapUp {
 
     /**
      * Both players draw 7 cards
-     * Exits if either player cannot draw a full hand.
+     * The game stops if either player doesnt draw a full hand
      */
     public void drawHand() {
         hand.clear();
         opponentHand.clear();
-
-        for (int i = 0; i < 7; i++) {
-            if (deck.isEmpty()) {
-                System.out.println("\nYour deck is empty! You lose!\n");
-                System.exit(0);
-            }
-            hand.add(deck.remove(0));
+        
+        if (!drawCards(7, hand) || !drawCards(7, opponentHand)) {
+            System.exit(0);
         }
 
-        for (int i = 0; i < 7; i++) {
-            if (deck.isEmpty()) {
-                System.out.println("\nOpponent's deck is empty! Opponent loses!\n");
-                System.exit(0);
-            }
-            opponentHand.add(deck.remove(0));
-        }
-
-        if (!hasActivePokemon()) {
+        if (!hasActivePokemon(hand)) {
             System.out.println("\nYou have no pokemon in your hand. Please start over.");
             System.exit(0);
         }
 
-        if (!opponentHasActivePokemon()) {
+        if (!hasActivePokemon(opponentHand)) {
             System.out.println("\nOpponent has no pokemon in their hand. Please start over.");
             System.exit(0);
         }
     }
 
     /**
-     * Returns if the active player is the user or the opponent
+     * Draws cards from the deck and puts them in the users hand. If the player or the opponents deck is empty than a 
+     * message is displayed that they lost
      *
-     * @return "player" if it's the player's turn, "opponent" if it is the opponents turn
+     * @param numberOfCards the number of cards to draw from the deck
+     * @param destinationHand either the usr or the opponents hand
+     * @return true if the cards were successfully dealt, false if the deck was empty
+     */
+    private boolean drawCards(int numberOfCards, ArrayList<Card> destinationHand) {
+        for (int i = 0; i < numberOfCards; i++) {
+            if (deck.isEmpty()) {
+                String message;
+                if (destinationHand == hand) {
+                    message = "\nYour deck is empty! You lose!\n";
+                } else {
+                    message = "\nOpponent's deck is empty! Opponent loses!\n";
+                }
+                System.out.println(message);
+                return false;
+            }
+            destinationHand.add(deck.remove(0));
+        }
+        return true;
+    }
+
+    /**
+     * Gets the active player
+     * 
+     * @return the active turn, opponent or user
      */
     public String getActivePlayer() {
         return isPlayerTurn ? "player" : "opponent";
     }
 
     /**
-     * Makes sure that the player's hand has at least one pokemon.
-     *
-     * @return true if there is a pokemon in hand, false if not
+     * Makes sure that the hand has at least one pokemon
+     * 
+     * @param hand the hand being checked for a pokemon
+     * @return true if the hand contains at least one pokemon and false if not
      */
-    private boolean hasActivePokemon() {
-        return hand.stream().anyMatch(card -> card instanceof Pokemon);
+   private boolean hasActivePokemon(ArrayList<Card> hand) {
+    for (Card card : hand) {
+        if (card instanceof Pokemon) {
+            return true;
+        }
     }
+    return false;
+}
 
     /**
-     * Make sure the opponent's also has at least one pokemon in it
-     *
-     * @return true if the opponent has a pokemon in hand, false otherwise
-     */
-    private boolean opponentHasActivePokemon() {
-        return opponentHand.stream().anyMatch(card -> card instanceof Pokemon);
-    }
-
-    /**
-     * Draws a card from the users deck and endds the game if the deck is empty.
+     * Draws a card from the user’s deck and ends the game if the deck is empty.
      */
     public void drawCard() {
-        if (!deck.isEmpty()) {
-            hand.add(deck.remove(0));
+        if (drawCards(1, hand)) {
             System.out.println("\nYou drew a card.\n");
             System.out.println("Hand: " + hand + "\n");
-        } else {
-            System.out.println("\nYour deck is empty! You lose!\n");
-            System.exit(0);
         }
     }
 
@@ -148,51 +163,35 @@ public class PokemonGameWrapUp {
      * Draws two cards from the deck when the trainer card is selected
      */
     public void drawTwoCards() {
-        int cardsToDraw = Math.min(3, deck.size());
-        for (int i = 0; i < cardsToDraw; i++) {
-            if (!deck.isEmpty()) {
-                hand.add(deck.remove(0));
-            }
-        }
+        drawCards(2, hand);
         System.out.println("\nYou drew 2 cards.");
         System.out.println("Your hand is now: " + hand);
     }
 
     /**
-     * Heals the pokemon currently in use
-     *
-     * @param amount the amount of health to heal
+     * Heals the specified pokemon
      */
-    public void healActivePokemon(int amount) {
-        if (activePokemon != null) {
-            activePokemon.heal(amount);
-            System.out.println("\nHealed " + activePokemon.getName() + " by " + amount + " HP.");
-            System.out.println("Current HP: " + activePokemon.getHp() + "\n");
+    private void healPokemon(Pokemon target, int amount) {
+        if (target != null) {
+            target.heal(amount);
+            System.out.println("\nHealed " + target.getName() + " by " + amount + " HP.");
+            System.out.println("Current HP: " + target.getHp() + "\n");
         } else {
             System.out.println("\nNo active pokemon to heal.\n");
         }
     }
 
     /**
-     * Switches the users active pokemon with a selected pokemon from the hand.
+     * Switches the user's active pokemon with a selected pokemon from the hand.
      */
     public void switchActivePokemon() {
         System.out.println("\nChoose a pokemon to switch to:");
-    
-        // Shows the user the pokemon in hand their hand that are available to switch to
-        ArrayList<Pokemon> pokemonInHand = new ArrayList<>();
-        for (int i = 0; i < hand.size(); i++) {
-            if (hand.get(i) instanceof Pokemon) {
-                pokemonInHand.add((Pokemon) hand.get(i));
-                System.out.println((pokemonInHand.size()) + ": " + hand.get(i).getName());
-            }
-        }
-    
+        ArrayList<Pokemon> pokemonInHand = getPokemonsInHand(hand);
         if (pokemonInHand.isEmpty()) {
             System.out.println("\nYou have no pokemon in your hand to switch to.\n");
             return;
         }
-    
+        
         int choice = scanner.nextInt() - 1;
         if (choice >= 0 && choice < pokemonInHand.size()) {
             Pokemon newActivePokemon = pokemonInHand.get(choice);
@@ -206,81 +205,66 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Lets the player use a Trainer card from their hand
+     * Helper method to get pokemon in the specified hand
+     * 
+     * @param hand search for pokemon cards in this hand
+     * @return all of the pokemon in the hand
+     */
+    private ArrayList<Pokemon> getPokemonsInHand(ArrayList<Card> hand) {
+        ArrayList<Pokemon> pokemonInHand = new ArrayList<>();
+        for (Card card : hand) {
+            if (card instanceof Pokemon) {
+                pokemonInHand.add((Pokemon) card);
+                System.out.println((pokemonInHand.size()) + ": " + card.getName());
+            }
+        }
+        return pokemonInHand;
+    }
+
+    /**
+     * Uses a Trainer card from the player's hand
      */
     public void useTrainerCard() {
         System.out.println("Choose a Trainer card to use:");
         ArrayList<Trainer> trainerCards = new ArrayList<>();
-        for (int i = 0; i < hand.size(); i++) {
-            if (hand.get(i) instanceof Trainer) {
-                trainerCards.add((Trainer) hand.get(i));
-                System.out.println((trainerCards.size()) + ": " + hand.get(i).getName());
+        for (Card card : hand) {
+            if (card instanceof Trainer) {
+                trainerCards.add((Trainer) card);
+                System.out.println((trainerCards.size()) + ": " + card.getName());
             }
         }
-    
-        // Check if there are no Trainer cards in your hand
+
         if (trainerCards.isEmpty()) {
             System.out.println("You have no Trainer cards in your hand.");
             return;
         }
-    
+
         int choice = scanner.nextInt() - 1;
         if (choice >= 0 && choice < trainerCards.size()) {
             Trainer selectedTrainer = trainerCards.get(choice);
-            // gets rid of the trainer card after using it
             hand.remove(selectedTrainer);
-    
-            switch (selectedTrainer.getName()) {
-                case "Draw 2 Cards":
-                    drawTwoCards(); 
-                    return;
-    
-                case "Heal 20 HP":
-                    healActivePokemon(20);
-                    return;
-    
-                case "Switch Pokemon":
-                    switchActivePokemon();
-                    return;
-    
-                default:
-                    System.out.println("\nTrainer card not recognized.\n");
-                    return;
-            }
+            trainerCardActions.getOrDefault(selectedTrainer.getName(), () -> System.out.println("\nTrainer card not recognized.\n")).run();
         } else {
             System.out.println("Invalid choice. Please select a valid Trainer card.");
         }
     }
 
     /**
-     * Deals a number of additional cards from deck.
-     *
-     * @param numberOfCards the number of cards to draw
+     * Attaches an energy card to the chosen pokemon in the hand
+     * 
+     * @param target the pokemon that the energy will be attached to
+     * @param hand the hand the energy card is drawn from
      */
-    public void drawAdditionalCards(int numberOfCards) {
-        for (int i = 0; i < numberOfCards; i++) {
-            if (!deck.isEmpty()) {
-                hand.add(deck.remove(0));
-            } else {
-                System.out.println("\nYour deck is empty! Cannot draw more cards.");
-                break;
-            }
-        }
-    }
-    
-    /**
-     * Attaches an energy card to the active pokemon
-     */
-    public void attachEnergy() {
-        if (activePokemon == null) {
-            System.out.println("\nYou must have an active pokemon to attach energy.\n");
+    private void attachEnergy(Pokemon target, ArrayList<Card> hand) {
+        if (target == null) {
+            System.out.println("\nNo active pokemon to attach energy.\n");
             return;
         }
 
         Card energyCard = hand.stream().filter(card -> card instanceof Energy).findFirst().orElse(null);
         if (energyCard != null) {
             hand.remove(energyCard);
-            activePokemon.attachEnergy((Energy) energyCard);
+            target.attachEnergy((Energy) energyCard);
         } else {
             System.out.println("\nNo Energy card available in hand.\n");
         }
@@ -444,55 +428,56 @@ public class PokemonGameWrapUp {
      * Performs the player's turn, lets the user attach energy, attack, use a Trainer card, or end their turn.
      */
     public void performPlayerTurn() {
-        System.out.println("\n--- Your Turn ---");
+    System.out.println("\n--- Your Turn ---");
 
-        if (!isFirstTurn) {
-            drawCard();
-        }
+    if (!isFirstTurn) {
+        drawCard();
+    }
 
-        isFirstTurn = false;
-        energyAttachedThisTurn = false;
+    isFirstTurn = false;
+    energyAttachedThisTurn = false;
 
-        if (activePokemon != null) {
-            System.out.println("Energy attached to " + activePokemon.getName() + ": " + activePokemon.getTotalEnergy());
-        }
+    if (activePokemon != null) {
+        System.out.println("Energy attached to " + activePokemon.getName() + ": " + activePokemon.getTotalEnergy());
+    }
 
-        while (true) {
-            try {
-                System.out.println("Choose an action: (1) Attach Energy, (2) Attack, (3) Use Trainer Card, (4) End Turn");
-                int choice = scanner.nextInt(); 
+    while (true) {
+        try {
+            System.out.println("Choose an action: (1) Attach Energy, (2) Attack, (3) Use Trainer Card, (4) End Turn");
+            int choice = scanner.nextInt(); 
 
-                switch (choice) {
-                    case 1:
-                        if (!energyAttachedThisTurn) {
-                            attachEnergy();
-                            energyAttachedThisTurn = true;
-                        } else {
-                            System.out.println("\nYou can only attach one Energy card per turn.");
-                        }
-                        break;
-                    case 2:
-                        attack();
-                        return;
-                    case 3:
-                        if (hasTrainerCardInHand()) {
-                            useTrainerCard();
-                        } else {
-                            System.out.println("You have no Trainer cards in your hand. Please choose another action.");
-                        }
-                        return;
-                    case 4:
-                        System.out.println("Ending your turn.");
-                        return;
-                    default:
-                        System.out.println("Invalid choice. Please choose a valid action.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input! Please enter a number");
-                scanner.nextLine();
+            switch (choice) {
+                case 1:
+                    if (!energyAttachedThisTurn) {
+                        attachEnergy(activePokemon, hand);  // Pass activePokemon and hand as arguments
+                        energyAttachedThisTurn = true;
+                    } else {
+                        System.out.println("\nYou can only attach one Energy card per turn.");
+                    }
+                    break;
+                case 2:
+                    attack();
+                    return;
+                case 3:
+                    if (hasTrainerCardInHand()) {
+                        useTrainerCard();
+                    } else {
+                        System.out.println("You have no Trainer cards in your hand. Please choose another action.");
+                    }
+                    return;
+                case 4:
+                    System.out.println("Ending your turn.");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please choose a valid action.");
             }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input! Please enter a number");
+            scanner.nextLine();
         }
     }
+}
+
 
     /**
      * Looks for a trainer card in the users hand
@@ -617,23 +602,25 @@ public class PokemonGameWrapUp {
      * Changes the users active pokemon to a different pokemon from their deck. If the active pokemon is 
      * knocked out a new pokemon is set as active.
      */
-   public void replaceActivePokemon() {
-    if (activePokemon != null) {
-        activePokemon.clearEnergy();
-    }
-    hand.add(activePokemon);
-    activePokemon = null;
-
-    for (Card card : hand) {
-        if (card instanceof Pokemon) {
-            activePokemon = (Pokemon) card;
-            System.out.println("Your new active pokemon is: " + activePokemon.getName());
-            hand.remove(card);
-            activePokemon.setActive(true);
-            return;
+    public void replaceActivePokemon() {
+        if (activePokemon != null) {
+            activePokemon.clearEnergy();
         }
-    }
-    System.out.println("You do not have any pokemon left to play!");
+        hand.add(activePokemon);
+        activePokemon = null;
+
+        // look for a new pokemon in the player's hand to maake the new active pokemon
+        for (Card card : hand) {
+            if (card instanceof Pokemon) {
+                activePokemon = (Pokemon) card;
+                System.out.println("Your new active pokemon is: " + activePokemon.getName());
+                hand.remove(card);
+                // set new active polemon
+                activePokemon.setActive(true);
+                return;
+            }
+        }
+        System.out.println("You do not have any pokemon left to play!");
     }
 
     /**

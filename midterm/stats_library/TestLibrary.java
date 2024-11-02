@@ -92,7 +92,6 @@ public class TestLibrary{
         System.out.printf("Joint Probability: P(A ∩ B) using P(A) and P(B|A): %.2f%n", tester.jointProbability(pA, pGivenA));
         System.out.printf("Conditional Probability P(A|B): %.1f%n", tester.conditionalProbability(pA, pB));
         System.out.printf("Dependent Intersection with P(A) = %.1f and P(B|A) = %.1f: %.2f%n", pA, pGivenA, tester.dependentIntersection(pA, pGivenA));
-        System.out.printf("Union Probability P(A ∪ B): %.2f%n", tester.unionProbability(pA, pB, pIntersection));
         System.out.println("Exclusive Union with P(A) = " + pA + " and P(B) = " + pB + ": " + tester.union(pA, pB, pIntersection, true));
         System.out.println("Non-Exclusive Union with P(A) = " + pA + " and P(B) = " + pB + ": " + tester.union(pA, pB, pIntersection, false));
 

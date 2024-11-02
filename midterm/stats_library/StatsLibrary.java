@@ -49,11 +49,14 @@ public class StatsLibrary{
     public ArrayList<Integer> mode(ArrayList<Integer> listOfNumbers){
         int maxNum = Integer.MIN_VALUE;
         int minNum = Integer.MAX_VALUE;
+
+        // find the minimum and maximum values in the list
         for (int number : listOfNumbers) {
             if (number > maxNum) maxNum = number;
             if (number < minNum) minNum = number;
         }
         int[] frequency = new int[maxNum - minNum + 1];
+
         for (int number : listOfNumbers) {
             frequency[number - minNum]++;
         }
@@ -187,7 +190,7 @@ public class StatsLibrary{
         return pA * pB;
     }
 
-    /**
+   /**
      * Calculates the intersection probability of two dependent events, A and B,
      * where the probability of B depends on A
      *
@@ -196,8 +199,8 @@ public class StatsLibrary{
      * @return the intersection probability of A and B
      */
     public double dependentIntersection(double pA, double pGivenA) {
-        return pA * pGivenA;
-    }
+        return jointProbability(pA, pGivenA);
+}
     
     /**
      * Gets the union probability of two events
@@ -354,18 +357,6 @@ public class StatsLibrary{
         }
         return variance;
     }    
-
-    /**
-     * Gets the union probability of two events with a specified intersection probability
-     *
-     * @param pA the probability of event A
-     * @param pB the probability of event B
-     * @param pAIntersectionB the probability of A and B occurring together
-     * @return the union probability of A and B
-     */
-    public double unionProbability(double pA, double pB, double pAIntersectionB) {
-        return pA + pB - pAIntersectionB;
-    }
 
     /**
      * Finds the total probability from an array of conditional probabilities and event probabilities
