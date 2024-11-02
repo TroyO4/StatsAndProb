@@ -9,21 +9,21 @@ import java.util.Scanner;
  * pokemon card game
  */
 public class PokemonGameWrapUp {
-    private ArrayList<Card> deck;
-    private ArrayList<Card> hand;
-    private ArrayList<Card> prizes;
+    final private ArrayList<Card> deck;
+    final private ArrayList<Card> hand;
+    final private ArrayList<Card> prizes;
     private Pokemon activePokemon;
     private Pokemon opponentActivePokemon;
     private int playerPrizesTaken;
     private int opponentPrizesTaken;
-    private boolean opponentHasBenchPokemon = true;
+    final private boolean opponentHasBenchPokemon = true;
     private int opponentActiveHp;
-    private ArrayList<Card> opponentHand;
-    private Scanner scanner;
+    final private ArrayList<Card> opponentHand;
+    final private Scanner scanner;
     private boolean energyAttachedThisTurn;
-    private boolean isPlayerTurn; 
+    final private boolean isPlayerTurn; 
 
-/**
+    /**
      * Creates a new PokemonGameWrapUp game
      */
     public PokemonGameWrapUp() {
@@ -112,7 +112,7 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Makes sure the player's hand has at least one pokemon.
+     * Makes sure that the player's hand has at least one pokemon.
      *
      * @return true if there is a pokemon in hand, false if not
      */
@@ -130,7 +130,7 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Draws a card from the users deck. Ends the game if the deck is empty.
+     * Draws a card from the users deck and endds the game if the deck is empty.
      */
     public void drawCard() {
         if (!deck.isEmpty()) {
@@ -144,7 +144,7 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Draws two cards from the deck.
+     * Draws two cards from the deck when the trainer card is selected
      */
     public void drawTwoCards() {
         int cardsToDraw = Math.min(3, deck.size());
@@ -158,7 +158,7 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Heals the users active pokemon
+     * Heals the pokemon currently in use
      *
      * @param amount the amount of health to heal
      */
@@ -178,7 +178,7 @@ public class PokemonGameWrapUp {
     public void switchActivePokemon() {
         System.out.println("\nChoose a pokemon to switch to:");
     
-        // Show pokemon in hand to switch
+        // Shows the user the pokemon in hand their hand that are available to switch to
         ArrayList<Pokemon> pokemonInHand = new ArrayList<>();
         for (int i = 0; i < hand.size(); i++) {
             if (hand.get(i) instanceof Pokemon) {
@@ -217,7 +217,7 @@ public class PokemonGameWrapUp {
             }
         }
     
-        // Check if there are no Trainer cards
+        // Check if there are no Trainer cards in your hand
         if (trainerCards.isEmpty()) {
             System.out.println("You have no Trainer cards in your hand.");
             return;
@@ -226,16 +226,16 @@ public class PokemonGameWrapUp {
         int choice = scanner.nextInt() - 1;
         if (choice >= 0 && choice < trainerCards.size()) {
             Trainer selectedTrainer = trainerCards.get(choice);
-            hand.remove(selectedTrainer); // Remove the selected Trainer from hand
+            // gets rid of the trainer card after using it
+            hand.remove(selectedTrainer);
     
-            // Handle the specific trainer effect
             switch (selectedTrainer.getName()) {
                 case "Draw 2 Cards":
                     drawTwoCards(); 
                     return;
     
                 case "Heal 20 HP":
-                    healActivePokemon(20);  // Heal active pokemon by 20 HP
+                    healActivePokemon(20);
                     return;
     
                 case "Switch Pokemon":
@@ -308,8 +308,8 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Allows the user to attack the opponents pokemon. The opponents pokemons health goes down by the amount of damage.
-     * Claims a prize if the opopnents pokemon is knocked out
+     * Allows the user to attack the opponents pokemon. The opponents pokemons health goes down by the amount of damage taken from attack.
+     * The user claims a prize if the opopnents pokemon is knocked out
      */
     public void attack() {
         if (activePokemon.hasSufficientEnergy()) {
@@ -349,7 +349,7 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Gives the opponent a prize card
+     * Gives the opponent a prize card if they knock out the users pokemon
      */
     public void claimOpponentPrize() {
         if (!deck.isEmpty()) {
@@ -400,7 +400,7 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Chooses the players active pokemon(first pokemon in the hand)
+     * Chooses the players active pokemon(first pokemon in their hand)
      * If there are no pokemon in the hand it displays a message saying that there is no pokemon to play.
      */
     private void setActivePokemon() {
@@ -613,7 +613,7 @@ public class PokemonGameWrapUp {
     }
 
     /**
-     * Changes the users active pokemon to a different pokemon from the their. If the active pokemon is 
+     * Changes the users active pokemon to a different pokemon from their deck. If the active pokemon is 
      * knocked out a new pokemon is set as active.
      */
    public void replaceActivePokemon() {
