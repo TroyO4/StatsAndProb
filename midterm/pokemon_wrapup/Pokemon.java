@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * from the card class
  */
 public class Pokemon extends Card {
-    private int hp;
+    private int health;
     private int attackDamage;
     private int energyRequired;
     private boolean isActive;
@@ -17,13 +17,13 @@ public class Pokemon extends Card {
      * Creates a new pokemon card with specified name, health, attack damage, and energy requirement.
      *
      * @param name the name of the pokemon
-     * @param hp the health of the pokemon
+     * @param health the health of the pokemon
      * @param attackDamage the damage of the pokemons attacks
      * @param energyRequired the number of energy cards that must be attatched to perform an attack
      */
-    public Pokemon(String name, int hp, int attackDamage, int energyRequired) {
+    public Pokemon(String name, int health, int attackDamage, int energyRequired) {
         super(name);
-        this.hp = hp;
+        this.health = health;
         this.attackDamage = attackDamage;
         this.energyRequired = energyRequired;
         this.isActive = false;
@@ -36,17 +36,17 @@ public class Pokemon extends Card {
      *
      * @return the health of the pokemon
      */
-    public int getHp() {
-        return hp;
+    public int getHealth() {
+        return health;
     }
 
     /**
      * Sets the health of the pokemon.
      *
-     * @param hp the health of the pokemon
+     * @param health the health of the pokemon
      */
-    public void setHp(int hp) {
-        this.hp = hp;
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     /**
@@ -55,7 +55,7 @@ public class Pokemon extends Card {
      * @param amount the amount to heal the pokemon
      */
     public void heal(int amount) {
-        hp += amount;
+        health += amount;
     }
 
      /**
@@ -82,8 +82,8 @@ public class Pokemon extends Card {
      * @param damage the amount of damage dealt to the pokemon
      */
     public void takeDamage(int damage) {
-        hp -= damage;
-        if (hp < 0) hp = 0;
+        health -= damage;
+        if (health < 0) health = 0;
     }
 
     /**

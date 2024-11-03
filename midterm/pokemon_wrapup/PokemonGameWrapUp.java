@@ -20,7 +20,7 @@ public class PokemonGameWrapUp {
     private int playerPrizesTaken;
     private int opponentPrizesTaken;
     final private boolean opponentHasBenchPokemon;
-    private int opponentActiveHp;
+    private int opponentActiveHealth;
     final private ArrayList<Card> opponentHand;
     final private Scanner scanner;
     private boolean energyAttachedThisTurn;
@@ -41,7 +41,7 @@ public class PokemonGameWrapUp {
 
         trainerCardActions = new HashMap<>();
         trainerCardActions.put("Draw 2 Cards", this::drawTwoCards);
-        trainerCardActions.put("Heal 20 HP", () -> healPokemon(activePokemon, 20));
+        trainerCardActions.put("Heal 20 Health", () -> healPokemon(activePokemon, 20));
         trainerCardActions.put("Switch Pokemon", this::switchActivePokemon);
     }
 
@@ -70,7 +70,7 @@ public class PokemonGameWrapUp {
         
         for (int i = 0; i < 6; i++) {
             deck.add(new Trainer("Draw 2 Cards"));
-            deck.add(new Trainer("Heal 20 HP"));
+            deck.add(new Trainer("Heal 20 Health"));
             deck.add(new Trainer("Switch Pokemon"));
         }
 
@@ -174,8 +174,8 @@ public class PokemonGameWrapUp {
     private void healPokemon(Pokemon target, int amount) {
         if (target != null) {
             target.heal(amount);
-            System.out.println("\nHealed " + target.getName() + " by " + amount + " HP.");
-            System.out.println("Current HP: " + target.getHp() + "\n");
+            System.out.println("\nHealed " + target.getName() + " by " + amount + " Health.");
+            System.out.println("Current Health: " + target.getHealth() + "\n");
         } else {
             System.out.println("\nNo active pokemon to heal.\n");
         }
@@ -301,15 +301,15 @@ public class PokemonGameWrapUp {
             System.out.println("\nAttacking the opponent...");
 
             int damageDealt = activePokemon.getAttackDamage();
-            opponentActiveHp -= damageDealt;
+            opponentActiveHealth -= damageDealt;
     
-            if (opponentActiveHp < 0) {
-                opponentActiveHp = 0;
+            if (opponentActiveHealth < 0) {
+                opponentActiveHealth = 0;
             }
     
-            System.out.println("You dealt " + damageDealt + " damage to opponent's " + opponentActivePokemon + ". Opponent's HP: " + opponentActiveHp);
+            System.out.println("You dealt " + damageDealt + " damage to opponent's " + opponentActivePokemon + ". Opponent's Health: " + opponentActiveHealth);
     
-            if (opponentActiveHp <= 0) {
+            if (opponentActiveHealth <= 0) {
                 claimPrize();
                 if (playerPrizesTaken==6) {
                     return;
@@ -415,7 +415,7 @@ public class PokemonGameWrapUp {
         }
         if (opponentActivePokemon != null) {
             opponentActivePokemon.setActive(true);
-            opponentActiveHp = opponentActivePokemon.getHp();
+            opponentActiveHealth = opponentActivePokemon.getHealth();
         }
         for (int i = 0; i < 6; i++) {
             prizes.add(deck.remove(0));
@@ -513,8 +513,8 @@ public class PokemonGameWrapUp {
 
             if (activePokemon != null) {
                 activePokemon.takeDamage(opponentActivePokemon.getAttackDamage());
-                System.out.println("Your pokemon now has " + activePokemon.getHp() + " HP remaining.");
-                if (activePokemon.getHp() <= 0) {
+                System.out.println("Your pokemon now has " + activePokemon.getHealth() + " Health remaining.");
+                if (activePokemon.getHealth() <= 0) {
                     System.out.println("Your pokemon is knocked out!");
                     replaceActivePokemon();
                     claimOpponentPrize();
@@ -561,7 +561,7 @@ public class PokemonGameWrapUp {
                 System.out.println("\nOpponent's pokemon knocked out!");
                 System.out.println("Opponent's new active pokemon is: " + opponentActivePokemon.getName());
                 opponentHand.remove(card);
-                opponentActiveHp = opponentActivePokemon.getHp();
+                opponentActiveHealth = opponentActivePokemon.getHealth();
                 opponentActivePokemon.setActive(true);
                 return;
             }
@@ -591,8 +591,8 @@ public class PokemonGameWrapUp {
     public void healOpponentActivePokemon(int amount) {
         if (opponentActivePokemon != null) {
             opponentActivePokemon.heal(amount);
-            System.out.println("Opponent healed " + opponentActivePokemon.getName() + " by " + amount + " HP.");
-            System.out.println("Opponent's pokemon HP: " + opponentActivePokemon.getHp());
+            System.out.println("Opponent healed " + opponentActivePokemon.getName() + " by " + amount + " Health.");
+            System.out.println("Opponent's pokemon Health: " + opponentActivePokemon.getHealth());
         } else {
             System.out.println("Opponent has no active pokemon to heal.");
         }
