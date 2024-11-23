@@ -1,4 +1,4 @@
-package project_two_part_one.plotter;
+package part1.plotter;
 import java.io.FileWriter;
 import java.io.IOException;
 

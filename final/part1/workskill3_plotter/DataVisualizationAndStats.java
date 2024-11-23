@@ -1,4 +1,4 @@
-package project_two_part_one.workskill3_plotter;
+package part1.workskill3_plotter;
 
 import org.apache.commons.math4.stat.descriptive.DescriptiveStatistics;
 import org.jfree.chart.ChartFactory;

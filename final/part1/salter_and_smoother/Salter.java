@@ -1,4 +1,4 @@
-package project_two_part_one.salter_and_smoother;
+package part1.salter_and_smoother;
 
 import java.io.File;
 import java.io.IOException;
