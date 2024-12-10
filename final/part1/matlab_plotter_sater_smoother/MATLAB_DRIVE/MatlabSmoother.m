@@ -1,4 +1,3 @@
-% Import Salted Data from CSV
 opts = detectImportOptions('MatlabSaltedData.csv');
 opts.DataLines = [2, Inf];
 data = readmatrix('MatlabSaltedData.csv', opts);
@@ -13,7 +12,6 @@ current_y = salted_y;
 
 smoothed_data = zeros(length(x), 5);
 
-% Perform iterative smoothing
 for iteration = 1:5
     smoothed_y = zeros(size(current_y));
     
@@ -29,40 +27,32 @@ for iteration = 1:5
     smoothed_data(:, iteration) = current_y;
 end
 
-% Combine data for output
 output_data = [x, original_y, salted_y, smoothed_data];
 
-% Define headers for the CSV file
-headers = {'X', 'Original_Y', 'Salted_Y', ...
-           'Smoothed_Y_1', 'Smoothed_Y_2', 'Smoothed_Y_3', 'Smoothed_Y_4', 'Smoothed_Y_5'};
+headers = {'X', 'Original_Hypotenuse', 'Salted_Hypotenuse', ...
+           'Smoothed_Hypotenuse_1', 'Smoothed_Hypotenuse_2', 'Smoothed_Hypotenuse_3', 'Smoothed_Hypotenuse_4', 'Smoothed_Hypotenuse_5'};
 
-% Write headers and data to the CSV file
 output_filename = 'MatlabSmoothedData.csv';
 writecell(headers, output_filename);
 writematrix(output_data, output_filename, 'WriteMode', 'append');
 
-% Create a graph
 figure;
 hold on;
 
-% Plot Original Data
 plot(x, original_y, 'b-', 'LineWidth', 2, 'DisplayName', 'Original Data');
 
-% Plot Salted Data
 plot(x, salted_y, 'ro', 'MarkerSize', 2, 'DisplayName', 'Salted Data');
 
-% Plot Smoothed Data from each iteration
-colors = lines(5); % Use distinct colors for each iteration
+colors = lines(5);
 for iteration = 1:5
     plot(x, smoothed_data(:, iteration), 'LineWidth', 1.5, ...
          'DisplayName', ['Smoothed ', num2str(iteration), ' Times'], ...
          'Color', colors(iteration, :));
 end
 
-% Add labels, legend, and title
-xlabel('X Values');
-ylabel('Y Values');
-title('Original, Salted, and Smoothed Data');
+xlabel('Variable Side');
+ylabel('Hypotenuse Smoothed');
+title('Smoothed Pythagorean Theorem');
 legend('Location', 'best');
 grid on;
 
