@@ -9,7 +9,18 @@ import javax.swing.*;
 import java.io.*;
 import java.util.Random;
 
+/**
+ * The ExternalLibrarySalter class reads data from a CSV file and salts it by adding or subtracting random maounts
+ * from the hypotenuse values. Then, it exports the salted data to another CSV file and creates a line chart 
+ * showing the results
+ */
 public class ExternalLibrarySalter {
+
+    /**
+     * Main method to execute the program.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         String inputCsv = "dataPlotter.csv";
         String outputCsv = "saltedDataPlotter.csv";
@@ -22,6 +33,14 @@ public class ExternalLibrarySalter {
         }
     }
 
+    /**
+     * Reads data from an input CSV file, salts it, and outputs the
+     * salted data to a CSV file.
+     *
+     * @param inputCsv  the path to the input CSV file containing original data
+     * @param outputCsv the path to the output CSV file for salted data
+     * @throws IOException if an I/O error occurs
+     */
     public static void saltDataAndExportToCSV(String inputCsv, String outputCsv) throws IOException {
         try (
             BufferedReader csvReader = new BufferedReader(new FileReader(inputCsv));
@@ -51,6 +70,14 @@ public class ExternalLibrarySalter {
         }
     }
 
+    /**
+     * Reads the original and salted hypotenuse data from a CSV file and shows them
+     * in a line chart.
+     *
+     * @param inputCsv  the path to the input CSV file containing original data
+     * @param outputCsv the path to the output CSV file containing salted data
+     * @throws IOException if an I/O error occurs
+     */
     public static void createAndShowChart(String inputCsv, String outputCsv) throws IOException {
         XYSeries originalSeries = new XYSeries("Original Hypotenuse");
         XYSeries saltedSeries = new XYSeries("Salted Hypotenuse");

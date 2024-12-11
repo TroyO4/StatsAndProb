@@ -4,13 +4,23 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.chart.plot.XYPlot;
-
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The ExternalLibrarySmoother class gets the salted data from the CSV file,
+ * smooths it multiple times and then exports the smoothed data to another new CSV file.
+ * It also creates a line chart for the data.
+ */
 public class ExternalLibrarySmoother {
+
+    /**
+     * Main method to execute the program.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         String inputCsv = "saltedDataPlotter.csv";
         String outputCsv = "smoothedDataPlotter.csv";
@@ -23,6 +33,13 @@ public class ExternalLibrarySmoother {
         }
     }
 
+    /**
+     * Reads salted hypotenuse data and applies smoothing iterations then outputs the data to a new csv file.
+     *
+     * @param inputCsv  the path to the input CSV file containing salted data
+     * @param outputCsv the path to the output CSV file for smoothed data
+     * @throws IOException if an I/O error occurs
+     */
     public static void smoothDataAndExportToCSV(String inputCsv, String outputCsv) throws IOException {
         try (
             BufferedReader csvReader = new BufferedReader(new FileReader(inputCsv));
@@ -87,6 +104,12 @@ public class ExternalLibrarySmoother {
         }
     }
 
+    /**
+     * Gets the smoothed hypotenuse data from the CSV and creates a line chart showing all 5 iterations
+     *
+     * @param outputCsv the path to the CSV file containing the output smoothed data
+     * @throws IOException if an I/O error occurs
+     */
     public static void createAndShowChart(String outputCsv) throws IOException {
         XYSeries originalSeries = new XYSeries("Original Hypotenuse");
         XYSeries saltedSeries = new XYSeries("Salted Hypotenuse");
