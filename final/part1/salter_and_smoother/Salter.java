@@ -8,7 +8,15 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * The Salter class reads data from a CSV file, applies random salt to the data,
+ * and exports the salted data to a new CSV file.
+ */
 public class Salter {
+
+    /**
+     * Single data point with its original and salted values.
+     */
     private static class Point {
         double x;
         double y;
@@ -16,35 +24,57 @@ public class Salter {
         double ySaltedMedium;
         double ySaltedLarge;
 
+        /**
+         * Constructor to initialize a Point with x and y values.
+         *
+         * @param x the x-coordinate
+         * @param y the y-coordinate
+         */
         Point(double x, double y) {
             this.x = x;
             this.y = y;
         }
 
+        /**
+         * Converts the Point data into a CSV-compatible string.
+         *
+         * @return the point in the form of a CSV
+         */
         @Override
         public String toString() {
             return x + "," + y + "," + ySaltedSmall + "," + ySaltedMedium + "," + ySaltedLarge;
         }
     }
 
+    /**
+     * Get the data from the input CSV file,salt, and saves the salted data to the output file.
+     *
+     * @param inputFilePath  the path to the input CSV file
+     * @param outputFilePath the path to the output CSV file
+     * @throws IOException if an I/O error occurs during file reading or writing
+     */
     public void processCSV(String inputFilePath, String outputFilePath) throws IOException {
         List<Point> points = loadCSV(inputFilePath);
         applySalt(points);
         saveCSV(outputFilePath, points);
     }
 
+    /**
+     * Loads data points from a CSV file.
+     *
+     * @param filePath the path to the CSV file
+     * @return a list of Points loaded from the file
+     * @throws IOException if an I/O error occurs during file reading
+     */
     private List<Point> loadCSV(String filePath) throws IOException {
         List<Point> points = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(filePath))) {
-            // Skip the header line
             if (scanner.hasNextLine()) {
                 scanner.nextLine();
             }
             while (scanner.hasNextLine()) {
                 String row = scanner.nextLine();
                 String[] values = row.split(",");
-                
-                // Skip rows that do not have numeric values
                 if (values.length < 2) {
                     continue;
                 }
@@ -53,19 +83,20 @@ public class Salter {
                     double y = Double.parseDouble(values[1]);
                     points.add(new Point(x, y));
                 } catch (NumberFormatException e) {
-                    // Skip non-numeric rows
                     continue;
                 }
             }
         }
-        System.out.println("Loaded " + points.size() + " points from " + filePath);
         return points;
     }
-    
 
+    /**
+     * Salts to the y-values
+     *
+     * @param the points that get salted
+     */
     private void applySalt(List<Point> points) {
         Random random = new Random();
-
         double[][] saltRanges = {
             {-5, 5},     // Small salt range
             {-20, 20},   // Medium salt range
@@ -77,10 +108,15 @@ public class Salter {
             point.ySaltedMedium = point.y + saltRanges[1][0] + (saltRanges[1][1] - saltRanges[1][0]) * random.nextDouble();
             point.ySaltedLarge = point.y + saltRanges[2][0] + (saltRanges[2][1] - saltRanges[2][0]) * random.nextDouble();
         }
-
-        System.out.println("Applied salt with small, medium, and large ranges to " + points.size() + " points.");
     }
 
+    /**
+     * Saves the salted data to a CSV file.
+     *
+     * @param filePath the path to the output CSV file
+     * @param points the list of Points to save
+     * @throws IOException if an I/O error occurs during file writing
+     */
     private void saveCSV(String filePath, List<Point> points) throws IOException {
         try (PrintWriter writer = new PrintWriter(filePath)) {
             writer.println("variableSide,hypotenuse,hypotenuse_salted_small,hypotenuse_salted_medium,hypotenuse_salted_large");
@@ -88,23 +124,23 @@ public class Salter {
                 writer.println(point.toString());
             }
         }
-        System.out.println("Saved salted data to " + filePath);
     }
 
+    /**
+     * The main method initializes the Salter class and processes the dataset.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         Salter salter = new Salter();
-
-        // File paths
         String inputFilePath = "final/part1/plotter/data.csv";
         String outputFilePath = "final/part1/saltedData.csv";
 
         try {
-            // Process the dataset
-            System.out.println("Processing dataset");
             salter.processCSV(inputFilePath, outputFilePath);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("Data exported to new CSV file");
     }
 }
